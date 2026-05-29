@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLOCK DAY</title>
+<title>MIND MINE</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -19,8 +19,20 @@ body.light{
   --border:#dadad5;--border2:#c8c8c2;--text:#111;--text-dim:#70706b;--text-mid:#333;
   --accent:#111;--accent2:#333;--accent-text:#fff;--select:rgba(0,0,0,.1);--shadow:rgba(0,0,0,.12);
 }
+body.block{
+  --bg:#142014;--surface:#1d2a1c;--surface2:#273a25;--surface3:#344b30;
+  --border:#3f5b34;--border2:#6d4b2f;--text:#f5f8ef;--text-dim:#9fb094;--text-mid:#d4dfcb;
+  --accent:#b6ff72;--accent2:#7bd84d;--accent-text:#0d1609;--select:rgba(182,255,114,.24);--shadow:rgba(0,0,0,.42);
+}
 html{font-size:14px}
 body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh}
+body.block{
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.04) 0 2px,transparent 2px 32px),
+    linear-gradient(0deg,rgba(0,0,0,.16) 0 2px,transparent 2px 32px),
+    linear-gradient(#6fc2ff 0 150px,#4f9f3b 150px 230px,#142014 230px);
+  background-size:32px 32px,32px 32px,100% 100%;
+}
 
 /* ═══ NAV ═══ */
 .nav{
@@ -44,6 +56,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-
 .btn-nav{background:var(--surface2);color:var(--text-mid);border:1px solid var(--border2);padding:7px 14px;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1.5px;cursor:pointer;border-radius:5px;transition:all .2s;white-space:nowrap}
 .btn-nav:hover{color:var(--text)}
 .btn-nav-danger:hover{border-color:var(--red);color:var(--red)}
+.icon-gear{border:1.6px solid currentColor;border-radius:50%}.icon-gear::before{content:'';position:absolute;inset:4px;border:1.6px solid currentColor;border-radius:50%}.icon-gear::after{content:'';position:absolute;left:6px;top:-3px;width:2px;height:19px;background:currentColor;box-shadow:0 0 0 currentColor;transform:rotate(45deg)}
 
 /* ═══ VIEWS ═══ */
 .view{display:none;padding:28px 36px 60px;animation:fadeIn .18s ease}
@@ -299,6 +312,15 @@ input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6)}
 .modal-textarea:focus{border-color:var(--accent)}
 .modal-textarea::placeholder{color:var(--text-dim)}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+.settings-options{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 22px}
+.settings-option{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:14px 12px;text-align:left;color:var(--text);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s;min-height:92px}
+.settings-option:hover{border-color:var(--accent)}
+.settings-option.active{border-color:var(--accent);box-shadow:0 0 0 3px var(--select)}
+.settings-option-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:6px}
+.settings-option-desc{font-size:10px;color:var(--text-dim);line-height:1.55}
+.settings-option.block-swatch{background:linear-gradient(#6fc2ff 0 28%,#4f9f3b 28% 52%,#815438 52%);color:#fff}
+.settings-option.block-swatch .settings-option-title{color:#fff;text-shadow:2px 2px 0 #1d4017}
+.settings-option.block-swatch .settings-option-desc{color:#f1ffe8}
 .modal-color-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
 .modal-color-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:transform .12s,border-color .12s}
 .modal-color-swatch:hover{transform:scale(1.1)}
@@ -329,6 +351,27 @@ input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6)}
 .history-day-date{font-size:13px;letter-spacing:.5px}
 .history-day-dow{font-size:9px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase}
 .history-empty{font-size:12px;color:var(--text-dim);font-style:italic;text-align:center;padding:24px 0}
+
+/* BLOCK MODE */
+body.block .nav,body.block .timeline-wrapper,body.block .tasks-wrapper,body.block .note-card,body.block .focus-bar,body.block .calendar-box,body.block .modal,body.block .history-modal-inner,body.block .project-card,body.block .kanban-col,body.block .notes-layout{
+  border-width:4px;border-color:#1b2416;box-shadow:6px 6px 0 rgba(0,0,0,.32);border-radius:0;
+}
+body.block .nav{background:#1d2a1c;border-bottom:4px solid #0b1209;box-shadow:0 6px 0 rgba(0,0,0,.28)}
+body.block .nav-brand,body.block .brand-title,body.block .view-title,body.block .calendar-title,body.block .modal-title{color:var(--accent);text-shadow:3px 3px 0 #1d4017}
+body.block .nav-tab,body.block .btn,body.block .btn-nav,body.block .btn-ghost,body.block .task-add-btn,body.block .calendar-nav-btn,body.block .kanban-add-btn,body.block .notes-new-btn,body.block .project-menu-btn{
+  border-radius:0;border-width:3px;box-shadow:3px 3px 0 rgba(0,0,0,.28);
+}
+body.block .btn-primary,body.block .task-add-btn,body.block .notes-new-btn{background:var(--accent);color:var(--accent-text)}
+body.block input,body.block textarea,body.block select{border-radius:0;border-width:3px}
+body.block .timeline-grid,body.block .calendar-day-cell,body.block .task-item,body.block .agenda-item,body.block .meeting-item,body.block .kanban-card,body.block .note-list-item{
+  border-radius:0;
+}
+body.block .timeline-grid,body.block .calendar-grid-month{background:#182217}
+body.block .slot:nth-child(8n),body.block .calendar-day-cell{border-color:#3f5b34}
+body.block .time-block,body.block .proj-tl-block{border-radius:0;box-shadow:4px 4px 0 rgba(0,0,0,.32);border:3px solid rgba(0,0,0,.28)}
+body.block .calendar-day-cell.selected,body.block .calendar-mode-tab.active{background:#b6ff72;color:#0d1609;border-color:#0d1609}
+body.block .calendar-toolbar,body.block .calendar-weekdays{background:#273a25}
+body.block .focus-pulse{box-shadow:0 0 0 4px rgba(182,255,114,.12)}
 
 @media (max-width:980px){
   .calendar-box{grid-template-columns:1fr}
@@ -364,7 +407,7 @@ input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6)}
 
 <!-- ═══ NAV ═══ -->
 <nav class="nav">
-  <div class="nav-brand">BLOCK DAY</div>
+  <div class="nav-brand">MIND MINE</div>
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="switchView('day')"><span class="ui-icon icon-calendar"></span>DAY</button>
     <button class="nav-tab" onclick="switchView('projects')"><span class="ui-icon icon-board"></span>PROJECTS</button>
@@ -372,7 +415,7 @@ input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6)}
   </div>
   <div class="nav-right">
     <span class="user-badge" id="userBadge"></span>
-    <button class="btn-nav" id="themeToggle" onclick="toggleTheme()">DARK</button>
+    <button class="btn-nav" id="settingsButton" onclick="openSettingsModal()"><span class="ui-icon icon-gear"></span>SETTINGS</button>
     <button class="btn-nav btn-nav-danger" onclick="logout()">LOGOUT</button>
   </div>
 </nav>
@@ -380,7 +423,7 @@ input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6)}
 <!-- ═══ VIEW: DAY ═══ -->
 <div id="view-day" class="view active">
   <div class="day-header">
-    <div><div class="brand-title">BLOCK DAY</div><div class="brand-sub">Time Block Planner</div></div>
+    <div><div class="brand-title">MIND MINE</div><div class="brand-sub">Mind Mine Planner</div></div>
     <div class="day-controls">
       <div class="date-display" id="dateDisplay">—</div>
       <input type="date" id="datePicker">
@@ -548,6 +591,32 @@ input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6)}
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeBoxModal()">CANCEL</button>
       <button class="btn btn-primary" onclick="saveBox()">CREATE</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SETTINGS MODAL ═══ -->
+<div class="modal-overlay" id="settingsModal" style="display:none">
+  <div class="modal" style="width:520px">
+    <div class="modal-title">SETTINGS</div>
+    <div class="modal-sub">Choose how Mind Mine looks.</div>
+    <div class="modal-label">Theme</div>
+    <div class="settings-options">
+      <button class="settings-option" data-theme-option="dark" onclick="setTheme('dark')">
+        <div class="settings-option-title">DARK</div>
+        <div class="settings-option-desc">Clean black and white planner mode.</div>
+      </button>
+      <button class="settings-option" data-theme-option="light" onclick="setTheme('light')">
+        <div class="settings-option-title">WHITE</div>
+        <div class="settings-option-desc">Bright mode with black text.</div>
+      </button>
+      <button class="settings-option block-swatch" data-theme-option="block" onclick="setTheme('block')">
+        <div class="settings-option-title">BLOCK MODE</div>
+        <div class="settings-option-desc">Minecraft-style blocks, grass, and pixel edges.</div>
+      </button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeSettingsModal()">CLOSE</button>
     </div>
   </div>
 </div>
@@ -759,19 +828,27 @@ async function init() {
 function updateDateDisplay() {
   const v = document.getElementById('datePicker').value;
   document.getElementById('dateDisplay').textContent = formatDateLong(v);
-  document.title = 'BLOCK DAY — ' + (v || 'Planner');
+  document.title = 'MIND MINE — ' + (v || 'Planner');
   renderCalendarHeader();
   renderMonthCalendar();
 }
 function applyTheme() {
   document.body.classList.toggle('light', theme === 'light');
-  document.getElementById('themeToggle').textContent = theme === 'light' ? 'WHITE' : 'DARK';
+  document.body.classList.toggle('block', theme === 'block');
+  document.querySelectorAll('[data-theme-option]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.themeOption === theme);
+  });
 }
-function toggleTheme() {
-  theme = theme === 'light' ? 'dark' : 'light';
+function setTheme(nextTheme) {
+  theme = ['dark','light','block'].includes(nextTheme) ? nextTheme : 'dark';
   localStorage.setItem('blockDayTheme', theme);
   applyTheme();
 }
+function openSettingsModal() {
+  applyTheme();
+  document.getElementById('settingsModal').style.display = 'flex';
+}
+function closeSettingsModal() { document.getElementById('settingsModal').style.display = 'none'; }
 async function logout() {
   await fetch('/auth/logout', { method: 'POST' });
   window.location.href = '/login.html';
@@ -1618,6 +1695,7 @@ async function deleteCurrentNote() {
 // ═══════════════════════════════════════════════════════
 document.addEventListener('keydown', e => {
   const modals = [
+    { overlay: 'settingsModal', close: closeSettingsModal },
     { overlay: 'blockModalOverlay', close: closeBlockModal, save: saveBlock },
     { overlay: 'boxModal', close: closeBoxModal, save: saveBox },
     { overlay: 'historyOverlay', close: closeHistory },
@@ -1633,7 +1711,7 @@ document.addEventListener('keydown', e => {
     }
   }
 });
-['blockModalOverlay','boxModal','historyOverlay','newProjectModal','cardModal','tlBlockModal'].forEach(id => {
+['settingsModal','blockModalOverlay','boxModal','historyOverlay','newProjectModal','cardModal','tlBlockModal'].forEach(id => {
   const el = document.getElementById(id); if (!el) return;
   el.addEventListener('click', e => { if (e.target === el) el.style.display = 'none'; });
 });

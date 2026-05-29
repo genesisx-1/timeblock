@@ -1,7 +1,7 @@
 {
-  "name": "block-day",
+  "name": "mind-mine",
   "version": "1.0.0",
-  "description": "Time Block Planner with user auth",
+  "description": "Mind Mine Planner with user auth",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

@@ -3,102 +3,96 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLOCK DAY - Time Block Planner</title>
+<title>MIND MINE - Mind Mine Planner</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0d0d0d;--surface:#151515;--surface2:#202020;--line:#303030;--text:#f2f2f2;--muted:#797979;--mid:#bdbdbd;--accent:#fff;--ink:#050505;--green:#33d17a;--shadow:rgba(0,0,0,.5)}
+:root{
+  --sky:#7fc7ff;--sky2:#c9ecff;--grass:#4f9f3b;--grass2:#2f6f2b;--dirt:#815438;--stone:#575b60;
+  --deep:#111614;--surface:#1b211d;--surface2:#273128;--line:#3f4b41;--text:#f5f8ef;--muted:#b8c5b3;
+  --lime:#7bd84d;--lime2:#b6ff72;--ink:#0b1209;--shadow:rgba(0,0,0,.38);
+}
 html{font-size:14px;scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;opacity:.28;background:linear-gradient(90deg,transparent 0 39px,rgba(255,255,255,.04) 40px),linear-gradient(0deg,transparent 0 39px,rgba(255,255,255,.032) 40px);background-size:40px 40px}
-.nav{position:fixed;top:0;left:0;right:0;z-index:20;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,54px);background:rgba(13,13,13,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-.brand{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:6px;color:var(--accent)}
-.nav-actions{display:flex;gap:10px}.nav-link,.btn{font-family:'Bebas Neue',sans-serif;letter-spacing:2px;text-decoration:none;border-radius:6px;padding:9px 14px;font-size:15px}
-.nav-link{color:var(--mid);border:1px solid transparent}.nav-link:hover{color:var(--accent);border-color:var(--line)}
-.btn{background:var(--accent);color:var(--ink);border:1px solid var(--accent);transition:transform .15s,background .2s}.btn:hover{transform:translateY(-1px);background:#ddd}
-.hero{min-height:100vh;padding:112px clamp(18px,5vw,70px) 46px;display:grid;grid-template-columns:minmax(0,1fr) minmax(420px,600px);gap:52px;align-items:center}
-.eyebrow{font-size:10px;letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin-bottom:18px}
-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(76px,11vw,156px);letter-spacing:8px;line-height:.84;color:var(--accent);max-width:900px}
-.lead{max-width:620px;color:var(--mid);font-size:14px;line-height:1.9;margin:24px 0 30px}
-.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.btn.secondary{background:transparent;color:var(--accent);border-color:var(--line)}.btn.secondary:hover{border-color:var(--accent);background:#191919}
-.scene{position:relative;min-height:590px;border:1px solid var(--line);background:#111;box-shadow:0 34px 90px var(--shadow);overflow:hidden}
-.scene-top{height:58px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 18px;color:var(--muted);font-size:10px;letter-spacing:2px;text-transform:uppercase}
-.scene-grid{position:absolute;left:18px;right:18px;top:86px;bottom:22px;display:grid;grid-template-columns:72px 1fr;gap:14px}
-.times{display:grid;grid-template-rows:repeat(8,1fr);color:#777;font-size:9px;letter-spacing:1px}
-.timeline{position:relative;border:1px solid #2b2b2b;background:#0e0e0e;overflow:hidden}
-.timeline::before{content:'';position:absolute;inset:0;background:linear-gradient(0deg,transparent 0 calc(12.5% - 1px),rgba(255,255,255,.06) 12.5%);background-size:100% 12.5%}
-.block{position:absolute;left:8%;right:10%;height:42px;border-radius:5px;background:#fff;color:#050505;font-family:'Bebas Neue',sans-serif;letter-spacing:2px;padding:12px 14px;font-size:16px;box-shadow:0 10px 26px rgba(0,0,0,.4);animation:bob 6s ease-in-out infinite}
-.block.alt{background:#6f6f6f;color:#fff}.block.line{background:transparent;color:#fff;border:1px solid #fff}.block.one{top:8%;width:48%}.block.two{top:25%;left:44%;width:38%;animation-delay:-1.5s}.block.three{top:44%;width:62%;animation-delay:-3s}.block.four{top:66%;left:28%;width:52%;animation-delay:-4.2s}
-.cursor{position:absolute;top:4%;bottom:4%;left:58%;width:1px;background:var(--green);box-shadow:0 0 20px rgba(51,209,122,.8);animation:pulse 1.7s infinite}
-.meeting-card{position:absolute;right:22px;bottom:34px;width:240px;background:#171717;border:1px solid var(--line);padding:16px;box-shadow:0 18px 42px rgba(0,0,0,.35);animation:rise 7s ease-in-out infinite}
-.meeting-card h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;margin-bottom:12px}.meeting-card p{font-size:10px;color:var(--mid);line-height:1.6}
-@keyframes bob{0%,100%{transform:translateX(0)}50%{transform:translateX(16px)}}@keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}@keyframes rise{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.section{position:relative;padding:86px clamp(18px,5vw,70px);border-top:1px solid var(--line);background:rgba(13,13,13,.86)}
-.section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:28px}.section h2{font-family:'Bebas Neue',sans-serif;font-size:54px;letter-spacing:6px}.section-copy{max-width:520px;color:var(--mid);font-size:12px;line-height:1.8}
-.features{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.feature{background:var(--surface);border:1px solid var(--line);padding:20px;min-height:190px;transition:transform .18s,border-color .18s}.feature:hover{transform:translateY(-4px);border-color:#fff}.feature-num{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:3px;color:#fff;margin-bottom:18px}.feature h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;margin-bottom:10px}.feature p{color:var(--mid);font-size:11px;line-height:1.75}
-.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.step{background:#111;border:1px solid var(--line);padding:22px;min-height:160px}.step h3{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;margin-bottom:12px}.step p{color:var(--mid);font-size:11px;line-height:1.8}
-.cta{min-height:360px;display:flex;align-items:center;justify-content:space-between;gap:30px}.cta h2{font-size:72px;line-height:.9}.cta p{max-width:520px;color:var(--mid);font-size:13px;line-height:1.85;margin-top:16px}
-@media (max-width:980px){.hero{grid-template-columns:1fr}.scene{min-height:520px}.features,.flow{grid-template-columns:1fr 1fr}.cta{display:block}.cta .hero-actions{margin-top:24px}}
-@media (max-width:620px){.nav{height:auto;padding:14px 18px;align-items:flex-start}.nav-actions{flex-wrap:wrap;justify-content:flex-end}.hero{padding-top:132px}.features,.flow{grid-template-columns:1fr}.scene{min-height:460px}.scene-grid{grid-template-columns:48px 1fr}.meeting-card{position:absolute;left:18px;right:18px;width:auto}.section-head{display:block}.section h2,.cta h2{font-size:46px;margin-bottom:14px}}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.block,.cursor,.meeting-card{animation:none}}
+body{background:var(--deep);color:var(--text);font-family:'DM Mono',monospace;overflow-x:hidden}
+.pixel-bg{position:fixed;inset:0;z-index:-2;background:linear-gradient(var(--sky),var(--sky2) 42%,#5fbf4c 42%,#4c9b37 54%,#6d472f 54%,#3a241a);image-rendering:pixelated}
+.pixel-bg::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.16) 0 2px,transparent 2px 32px),linear-gradient(0deg,rgba(0,0,0,.09) 0 2px,transparent 2px 32px);background-size:32px 32px;mix-blend-mode:multiply;opacity:.48}
+.cloud{position:fixed;z-index:-1;background:#fff;height:34px;width:118px;box-shadow:34px -16px 0 #fff,76px 0 0 #fff,136px -8px 0 #fff;opacity:.72;animation:cloud 28s linear infinite}.c1{top:112px;left:-180px}.c2{top:220px;left:-360px;animation-duration:42s;opacity:.55}
+@keyframes cloud{to{transform:translateX(calc(100vw + 520px))}}
+.nav{position:fixed;top:0;left:0;right:0;z-index:20;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,58px);background:rgba(17,22,20,.82);backdrop-filter:blur(10px);border-bottom:4px solid rgba(0,0,0,.35);box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.brand{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:6px;color:var(--lime2);text-shadow:3px 3px 0 #1d4017}
+.nav-actions{display:flex;gap:10px}.nav-link,.btn{font-family:'Bebas Neue',sans-serif;letter-spacing:2px;text-decoration:none;padding:11px 16px;font-size:16px;border-radius:0;border:3px solid #172414;box-shadow:4px 4px 0 rgba(0,0,0,.35)}
+.nav-link{color:var(--text);background:rgba(27,33,29,.78)}.nav-link:hover{background:#2d3a31}
+.btn{background:var(--lime2);color:var(--ink);transition:transform .12s,box-shadow .12s}.btn:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 rgba(0,0,0,.35)}.btn.secondary{background:#1f2a22;color:var(--text);border-color:#4e6a45}
+.hero{min-height:100vh;padding:122px clamp(18px,5vw,72px) 54px;display:grid;grid-template-columns:minmax(0,1fr) minmax(390px,560px);gap:54px;align-items:center}
+.eyebrow{font-size:10px;letter-spacing:4px;color:#173312;text-transform:uppercase;margin-bottom:18px;font-weight:500}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(78px,12vw,168px);letter-spacing:8px;line-height:.82;color:#fff;text-shadow:6px 6px 0 #214018,10px 10px 0 rgba(0,0,0,.28)}
+.lead{max-width:650px;color:#132810;background:rgba(255,255,255,.62);border:4px solid rgba(39,73,29,.38);box-shadow:8px 8px 0 rgba(0,0,0,.18);padding:18px 20px;font-size:13px;line-height:1.85;margin:26px 0 28px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.world{position:relative;min-height:560px;filter:drop-shadow(16px 22px 0 rgba(0,0,0,.18))}
+.sun{position:absolute;right:46px;top:6px;width:78px;height:78px;background:#ffe36d;box-shadow:0 0 0 8px rgba(255,227,109,.28)}
+.island{position:absolute;left:10px;right:10px;bottom:26px;height:330px}
+.block{position:absolute;width:72px;height:72px;background:var(--grass);border:4px solid rgba(0,0,0,.28);box-shadow:inset 0 16px 0 rgba(255,255,255,.13),inset 0 -16px 0 rgba(0,0,0,.13)}
+.block.dirt{background:var(--dirt)}.block.stone{background:var(--stone)}.block.leaf{background:#2e7d32}.block.wood{background:#744525}.block:nth-child(1){left:30px;top:120px}.block:nth-child(2){left:102px;top:120px}.block:nth-child(3){left:174px;top:120px}.block:nth-child(4){left:246px;top:120px}.block:nth-child(5){left:318px;top:120px}.block:nth-child(6){left:390px;top:120px}.block:nth-child(7){left:102px;top:192px}.block:nth-child(8){left:174px;top:192px}.block:nth-child(9){left:246px;top:192px}.block:nth-child(10){left:318px;top:192px}.block:nth-child(11){left:174px;top:264px}.block:nth-child(12){left:246px;top:264px}
+.tree{position:absolute;left:366px;top:28px}.tree .wood{position:absolute;left:43px;top:72px}.tree .leaf{position:absolute}.tree .leaf.l1{left:0;top:0}.tree .leaf.l2{left:72px;top:0}.tree .leaf.l3{left:36px;top:-72px}
+.mine-card{position:absolute;left:34px;top:44px;width:270px;background:#172018;border:4px solid #111;box-shadow:8px 8px 0 rgba(0,0,0,.32);padding:16px;animation:float 4.6s ease-in-out infinite}
+.mine-card h2{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:4px;color:var(--lime2);margin-bottom:10px}.mine-card p{font-size:10px;color:var(--muted);line-height:1.7}
+.ore{position:absolute;width:16px;height:16px;background:var(--lime2);box-shadow:32px 16px 0 var(--lime),64px -8px 0 var(--lime2),112px 22px 0 var(--lime);animation:spark 1.8s ease-in-out infinite}
+.ore.o1{left:192px;top:214px}.ore.o2{left:280px;top:286px;animation-delay:-.8s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}@keyframes spark{0%,100%{opacity:.45}50%{opacity:1}}
+.section{position:relative;padding:88px clamp(18px,5vw,72px);background:#111614;border-top:6px solid rgba(0,0,0,.32)}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:28px;margin-bottom:28px}.section h2{font-family:'Bebas Neue',sans-serif;font-size:58px;letter-spacing:6px;color:var(--lime2);text-shadow:4px 4px 0 #183111}.section-copy{max-width:580px;color:var(--muted);font-size:12px;line-height:1.85}
+.features,.flow{display:grid;gap:16px}.features{grid-template-columns:repeat(4,1fr)}.flow{grid-template-columns:repeat(3,1fr)}
+.feature,.step{background:var(--surface);border:4px solid #0c100d;box-shadow:8px 8px 0 rgba(0,0,0,.28);padding:22px;min-height:178px}.feature:hover,.step:hover{outline:3px solid var(--lime)}
+.num{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--lime2);letter-spacing:3px;margin-bottom:14px}.feature h3,.step h3{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;margin-bottom:10px}.feature p,.step p{font-size:11px;line-height:1.75;color:var(--muted)}
+.cta{display:flex;align-items:center;justify-content:space-between;gap:28px;min-height:350px}.cta h2{font-size:74px;line-height:.9}.cta p{max-width:560px;color:var(--muted);font-size:13px;line-height:1.8;margin-top:14px}
+@media (max-width:980px){.hero{grid-template-columns:1fr}.world{min-height:500px}.features,.flow{grid-template-columns:1fr 1fr}.cta{display:block}.cta .hero-actions{margin-top:24px}}
+@media (max-width:620px){.nav{height:auto;padding:14px 18px;align-items:flex-start}.nav-actions{flex-wrap:wrap;justify-content:flex-end}.hero{padding-top:142px}.features,.flow{grid-template-columns:1fr}.world{min-height:420px;transform:scale(.78);transform-origin:top left;width:128%}.section-head{display:block}.section h2,.cta h2{font-size:48px;margin-bottom:14px}.lead{background:rgba(255,255,255,.74)}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.cloud,.mine-card,.ore{animation:none}}
 </style>
 </head>
 <body>
+<div class="pixel-bg"></div><div class="cloud c1"></div><div class="cloud c2"></div>
 <nav class="nav">
-  <div class="brand">BLOCK DAY</div>
-  <div class="nav-actions">
-    <a class="nav-link" href="/login.html">SIGN IN</a>
-    <a class="btn" href="/register.html">START</a>
-  </div>
+  <div class="brand">MIND MINE</div>
+  <div class="nav-actions"><a class="nav-link" href="/login.html">SIGN IN</a><a class="btn" href="/register.html">START</a></div>
 </nav>
 <main>
   <section class="hero">
     <div>
-      <div class="eyebrow">Time block planner for real days</div>
-      <h1>BLOCK DAY</h1>
-      <p class="lead">Block Day turns your day into a visual timeline. You drag out work blocks, add meetings, track tasks, keep day notes, and see what your day actually looks like before it slips away.</p>
-      <div class="hero-actions">
-        <a class="btn" href="/register.html">CREATE ACCOUNT</a>
-        <a class="btn secondary" href="#how">HOW IT WORKS</a>
-      </div>
+      <div class="eyebrow">Mine your day before it mines you</div>
+      <h1>MIND MINE</h1>
+      <p class="lead">I made Mind Mine because plans can feel buried underground. The app helps you dig your thoughts out, place every task into a clear time block, and build a day that is easier to follow.</p>
+      <div class="hero-actions"><a class="btn" href="/register.html">ENTER THE MINE</a><a class="btn secondary" href="#why">WHY IT EXISTS</a></div>
     </div>
-    <div class="scene" aria-label="Animated product preview">
-      <div class="scene-top"><span>Friday agenda</span><span>Live day view</span></div>
-      <div class="scene-grid">
-        <div class="times"><span>7AM</span><span>9AM</span><span>11AM</span><span>1PM</span><span>3PM</span><span>5PM</span><span>7PM</span><span>9PM</span></div>
-        <div class="timeline">
-          <div class="block one">DEEP WORK</div>
-          <div class="block alt two">MEETING</div>
-          <div class="block line three">PROJECT BUILD</div>
-          <div class="block four">RESET</div>
-          <div class="cursor"></div>
-        </div>
+    <div class="world" aria-label="Minecraft inspired Mind Mine scene">
+      <div class="sun"></div>
+      <div class="mine-card"><h2>YOUR DAY, BLOCK BY BLOCK</h2><p>Tasks, meetings, notes, and focus blocks become one map you can actually read.</p></div>
+      <div class="island">
+        <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
+        <div class="block dirt"></div><div class="block dirt"></div><div class="block stone"></div><div class="block dirt"></div><div class="block stone"></div><div class="block dirt"></div>
+        <div class="ore o1"></div><div class="ore o2"></div>
       </div>
-      <div class="meeting-card"><h3>CALENDAR BOX</h3><p>Meetings and time blocks combine into one clean agenda for the selected day.</p></div>
+      <div class="tree"><div class="block leaf l1"></div><div class="block leaf l2"></div><div class="block leaf l3"></div><div class="block wood"></div></div>
     </div>
   </section>
-  <section class="section" id="how">
-    <div class="section-head">
-      <h2>WHAT IT DOES</h2>
-      <p class="section-copy">A normal todo list tells you what exists. Time blocking shows when it can happen. Block Day puts your hours, meetings, tasks, and notes in one place so your plan is visible.</p>
-    </div>
+  <section class="section" id="why">
+    <div class="section-head"><h2>WHY I MADE IT</h2><p class="section-copy">Mind Mine is for turning messy brain stuff into blocks you can place. Instead of a long list staring back at you, you get a day map: what happens, when it happens, and what needs your focus.</p></div>
     <div class="features">
-      <div class="feature"><div class="feature-num">01</div><h3>DRAG TIME BLOCKS</h3><p>Create blocks across a 24-hour timeline and label exactly what each part of the day is for.</p></div>
-      <div class="feature"><div class="feature-num">02</div><h3>ADD MEETINGS</h3><p>Drop meetings into the calendar box and see them mixed into the day agenda with your blocks.</p></div>
-      <div class="feature"><div class="feature-num">03</div><h3>TRACK TASKS</h3><p>Keep daily tasks beside your schedule and watch progress move as you check things off.</p></div>
-      <div class="feature"><div class="feature-num">04</div><h3>CUSTOM BOXES</h3><p>Add or remove your own labeled note boxes for reminders, routines, calls, wins, or anything else.</p></div>
+      <div class="feature"><div class="num">01</div><h3>MINE THE MESS</h3><p>Pull tasks, meetings, and random thoughts out of your head and put them where they belong.</p></div>
+      <div class="feature"><div class="num">02</div><h3>PLACE BLOCKS</h3><p>Drag time blocks onto the timeline so your plan has a real shape.</p></div>
+      <div class="feature"><div class="num">03</div><h3>CHECK THE MAP</h3><p>Use the calendar view to see the selected day and what is already waiting there.</p></div>
+      <div class="feature"><div class="num">04</div><h3>KEEP NOTES</h3><p>Add custom boxes for school, work, calls, reminders, wins, or whatever your day needs.</p></div>
     </div>
   </section>
   <section class="section">
-    <div class="section-head"><h2>HOW TO USE IT</h2><p class="section-copy">The flow is simple: pick a date, block the hours, add the meetings, then write the notes you need for that day.</p></div>
+    <div class="section-head"><h2>HOW IT WORKS</h2><p class="section-copy">Build the day like a base: start with the date, place the important blocks, add meetings, then keep notes beside the plan.</p></div>
     <div class="flow">
-      <div class="step"><h3>PLAN</h3><p>Drag on the timeline to create focused work, class, gym, errands, or recovery blocks.</p></div>
-      <div class="step"><h3>CHECK</h3><p>Use the calendar box to read your day like a clean corporate agenda email.</p></div>
-      <div class="step"><h3>REVIEW</h3><p>Use day boxes and daily log notes to remember what happened and improve tomorrow.</p></div>
+      <div class="step"><h3>PICK A DAY</h3><p>Open the calendar and choose the day you want to build.</p></div>
+      <div class="step"><h3>BLOCK TIME</h3><p>Drag across the 24-hour timeline and label what each block is for.</p></div>
+      <div class="step"><h3>RUN THE PLAN</h3><p>Use tasks, focus, meetings, and day boxes to stay on track.</p></div>
     </div>
   </section>
   <section class="section cta">
-    <div><h2>MAKE THE DAY VISIBLE.</h2><p>Start with one day. Block the hours. Add the meetings. Keep the plan where you can actually use it.</p></div>
+    <div><h2>START MINING YOUR MIND.</h2><p>Make the day visible, one block at a time.</p></div>
     <div class="hero-actions"><a class="btn" href="/register.html">GET STARTED</a><a class="btn secondary" href="/login.html">SIGN IN</a></div>
   </section>
 </main>
