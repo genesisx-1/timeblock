@@ -103,18 +103,19 @@ app.get('/auth/me', requireAuthAPI, (req, res) => res.json({ username: req.user.
 
 // ─── PLANNER DATA ───
 
-const EMPTY_DAY = { blocks: [], nextId: 1, objectives: '', dailyGiven: '', brainDump: '', tasks: [], currentFocus: '', dailyLog: '' };
+const EMPTY_DAY = { blocks: [], nextId: 1, objectives: '', dailyGiven: '', brainDump: '', tasks: [], meetings: [], dayBoxes: null, currentFocus: '', dailyLog: '' };
 
 app.get('/api/data/:date', requireAuthAPI, (req, res) => {
   res.json(readPlanner(req.user.id, req.params.date) || { ...EMPTY_DAY });
 });
 
 app.post('/api/data/:date', requireAuthAPI, (req, res) => {
-  const { blocks, nextId, objectives, dailyGiven, brainDump, tasks, currentFocus, dailyLog } = req.body;
+  const { blocks, nextId, objectives, dailyGiven, brainDump, tasks, meetings, dayBoxes, currentFocus, dailyLog } = req.body;
   writePlanner(req.user.id, req.params.date, {
     blocks: blocks || [], nextId: nextId || 1, objectives: objectives || '',
     dailyGiven: dailyGiven || '', brainDump: brainDump || '',
-    tasks: tasks || [], currentFocus: currentFocus || '', dailyLog: dailyLog || '',
+    tasks: tasks || [], meetings: meetings || [], dayBoxes: Array.isArray(dayBoxes) ? dayBoxes : null,
+    currentFocus: currentFocus || '', dailyLog: dailyLog || '',
     updatedAt: new Date().toISOString(),
   });
   res.json({ success: true });
@@ -208,7 +209,8 @@ app.delete('/api/notes/:id', requireAuthAPI, (req, res) => {
 
 // ─── SERVE APP ───
 
-app.get('/', requireAuth, (req, res) => res.sendFile(path.join(__dirname, 'public', 'app.html')));
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'home.html')));
+app.get('/app', requireAuth, (req, res) => res.sendFile(path.join(__dirname, 'public', 'app.html')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(PORT, () => console.log(`Block Day running on port ${PORT}`));
