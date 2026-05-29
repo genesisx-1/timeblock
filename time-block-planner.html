@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TIME BLOCK PLANNER</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;
+  --surface:#141414;
+  --surface2:#1c1c1c;
+  --border:#252525;
+  --border2:#333;
+  --text:#e4ddd4;
+  --text-dim:#5a5550;
+  --text-mid:#8a8480;
+  --accent:#d4a853;
+  --accent2:#b88a3a;
+  --red:#c0392b;
+}
+html{font-size:14px}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Mono',monospace;
+  min-height:100vh;
+  padding:28px 36px 48px;
+}
+
+/* ─── HEADER ─── */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  margin-bottom:32px;
+  border-bottom:1px solid var(--border2);
+  padding-bottom:20px;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.brand{display:flex;flex-direction:column;gap:4px}
+.brand-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:52px;
+  letter-spacing:6px;
+  color:var(--accent);
+  line-height:1;
+}
+.brand-sub{
+  font-size:10px;
+  letter-spacing:4px;
+  color:var(--text-dim);
+  text-transform:uppercase;
+}
+.header-right{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.date-display{
+  font-family:'Cormorant Garamond',serif;
+  font-size:16px;
+  font-style:italic;
+  color:var(--text-mid);
+  white-space:nowrap;
+}
+input[type="date"]{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  color:var(--text);
+  padding:9px 14px;
+  font-family:'DM Mono',monospace;
+  font-size:12px;
+  border-radius:5px;
+  cursor:pointer;
+  outline:none;
+  transition:border-color .2s;
+}
+input[type="date"]:hover,input[type="date"]:focus{border-color:var(--accent)}
+input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6)}
+.btn-export{
+  background:var(--accent);
+  color:#000;
+  border:none;
+  padding:10px 22px;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:16px;
+  letter-spacing:2px;
+  cursor:pointer;
+  border-radius:5px;
+  transition:background .2s;
+  white-space:nowrap;
+}
+.btn-export:hover{background:var(--accent2)}
+
+/* ─── SECTION LABELS ─── */
+.section-label{
+  font-size:9px;
+  letter-spacing:4px;
+  color:var(--text-dim);
+  text-transform:uppercase;
+  margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.section-label::after{
+  content:'';
+  flex:1;
+  height:1px;
+  background:var(--border);
+}
+
+/* ─── TIMELINE ─── */
+.timeline-section{margin-bottom:28px}
+.timeline-wrapper{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:10px;
+  padding:18px 20px 20px;
+  overflow-x:auto;
+}
+.timeline-hint{
+  font-size:9px;
+  color:var(--text-dim);
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:14px;
+  text-align:right;
+}
+.time-labels{
+  display:grid;
+  grid-template-columns:repeat(24,1fr);
+  margin-bottom:6px;
+  min-width:720px;
+}
+.time-label{
+  font-size:9px;
+  color:var(--text-dim);
+  text-align:center;
+  letter-spacing:.5px;
+  font-family:'DM Mono',monospace;
+}
+.time-label:nth-child(even){color:transparent}
+.timeline-grid{
+  position:relative;
+  height:100px;
+  display:grid;
+  grid-template-columns:repeat(48,1fr);
+  background:var(--surface2);
+  border-radius:6px;
+  overflow:hidden;
+  user-select:none;
+  cursor:crosshair;
+  border:1px solid var(--border);
+  min-width:720px;
+}
+.slot{
+  height:100%;
+  border-right:1px solid transparent;
+  position:relative;
+}
+.slot:nth-child(2n){border-right:1px solid var(--border)}
+.slot:nth-child(8n){border-right:1px solid var(--border2)}
+.slot.selecting{background:rgba(212,168,83,.18)}
+.slot.hover-active{background:rgba(212,168,83,.06)}
+.time-block{
+  position:absolute;
+  top:6px;
+  bottom:6px;
+  border-radius:6px;
+  display:flex;
+  align-items:center;
+  padding:0 10px;
+  cursor:pointer;
+  overflow:hidden;
+  font-size:10px;
+  font-weight:500;
+  color:#000;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  z-index:4;
+  transition:filter .15s,transform .1s;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
+  letter-spacing:.5px;
+  font-family:'DM Mono',monospace;
+}
+.time-block:hover{filter:brightness(1.12);transform:scaleY(1.04)}
+.time-block .block-inner{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  overflow:hidden;
+  pointer-events:none;
+}
+.block-label-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.block-time{font-size:8px;opacity:.65;white-space:nowrap;flex-shrink:0}
+.empty-hint{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:10px;
+  color:var(--text-dim);
+  letter-spacing:2px;
+  pointer-events:none;
+  z-index:1;
+}
+
+/* ─── BLOCK LEGEND ─── */
+.block-legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:14px;
+  min-height:22px;
+}
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:4px 10px;
+  font-size:10px;
+  letter-spacing:.5px;
+  cursor:pointer;
+  transition:border-color .15s;
+}
+.legend-item:hover{border-color:var(--border2)}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.legend-time{color:var(--text-dim)}
+
+/* ─── BUCKETS ─── */
+.buckets{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+  margin-bottom:0;
+}
+.bucket{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:10px;
+  padding:18px 18px 14px;
+  min-height:200px;
+  display:flex;
+  flex-direction:column;
+  transition:border-color .2s;
+}
+.bucket:focus-within{border-color:var(--accent2)}
+.bucket-header{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:14px;
+  border-bottom:1px solid var(--border);
+  padding-bottom:10px;
+}
+.bucket-icon{font-size:14px;line-height:1}
+.bucket-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:17px;
+  letter-spacing:2px;
+  color:var(--accent);
+}
+.bucket textarea{
+  background:transparent;
+  border:none;
+  color:var(--text);
+  font-family:'DM Mono',monospace;
+  font-size:11px;
+  flex:1;
+  resize:none;
+  outline:none;
+  line-height:1.8;
+  placeholder-color:var(--text-dim);
+}
+.bucket textarea::placeholder{color:var(--text-dim);font-style:italic}
+
+/* ─── MODAL ─── */
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:200;
+  backdrop-filter:blur(4px);
+  animation:fadeIn .15s ease;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:14px;
+  padding:28px;
+  width:380px;
+  max-width:92vw;
+  animation:slideUp .18s ease;
+  box-shadow:0 24px 64px rgba(0,0,0,.6);
+}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:24px;
+  letter-spacing:3px;
+  color:var(--accent);
+  margin-bottom:6px;
+}
+.modal-time{
+  font-size:11px;
+  color:var(--text-dim);
+  margin-bottom:20px;
+  letter-spacing:1px;
+}
+.modal-label{
+  font-size:9px;
+  letter-spacing:3px;
+  color:var(--text-dim);
+  text-transform:uppercase;
+  margin-bottom:7px;
+}
+.modal input[type="text"]{
+  width:100%;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  color:var(--text);
+  padding:10px 14px;
+  font-family:'DM Mono',monospace;
+  font-size:12px;
+  border-radius:6px;
+  margin-bottom:20px;
+  outline:none;
+  transition:border-color .2s;
+}
+.modal input[type="text"]:focus{border-color:var(--accent)}
+.color-grid{
+  display:grid;
+  grid-template-columns:repeat(8,1fr);
+  gap:8px;
+  margin-bottom:22px;
+}
+.color-swatch{
+  aspect-ratio:1;
+  border-radius:50%;
+  cursor:pointer;
+  border:3px solid transparent;
+  transition:transform .12s,border-color .12s;
+}
+.color-swatch:hover{transform:scale(1.1)}
+.color-swatch.selected{border-color:#fff;transform:scale(1.18)}
+.modal-actions{
+  display:flex;
+  gap:8px;
+  justify-content:flex-end;
+}
+.btn{
+  padding:9px 18px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:15px;
+  letter-spacing:1.5px;
+  transition:background .15s;
+}
+.btn-primary{background:var(--accent);color:#000}
+.btn-primary:hover{background:var(--accent2)}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border2)}
+.btn-secondary:hover{border-color:var(--border2);background:#242424}
+.btn-danger{background:var(--red);color:#fff}
+.btn-danger:hover{background:#a93226}
+
+/* ─── PRINT ─── */
+@media print{
+  body{background:#fff;color:#111;padding:16px 20px;font-size:12px}
+  .header-right .btn-export,
+  .header-right input[type="date"],
+  .timeline-hint,
+  .btn-export{display:none!important}
+  .brand-title{color:#111;font-size:38px}
+  .brand-sub{color:#666}
+  .date-display{color:#333;font-size:15px}
+  .timeline-wrapper{background:#f9f9f9;border-color:#ccc}
+  .timeline-grid{background:#efefef;border-color:#ccc;height:80px}
+  .slot{border-right-color:#ddd!important}
+  .bucket{background:#f9f9f9;border-color:#ccc;min-height:160px}
+  .bucket-title{color:#333}
+  .bucket textarea{color:#111}
+  .section-label{color:#888}
+  .section-label::after{background:#ccc}
+  .time-label{color:#999}
+  .time-label:nth-child(even){color:transparent}
+  .legend-item{background:#efefef;border-color:#ccc}
+  .legend-time{color:#666}
+  .empty-hint{display:none!important}
+  .modal-overlay{display:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════ HEADER ═══════════════════════════════════ -->
+<div class="header">
+  <div class="brand">
+    <div class="brand-title">BLOCK DAY</div>
+    <div class="brand-sub">Time Block Planner</div>
+  </div>
+  <div class="header-right">
+    <div class="date-display" id="dateDisplay">—</div>
+    <input type="date" id="datePicker" title="Select date">
+    <button class="btn-export" onclick="exportPDF()">⬇ EXPORT PDF</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ TIMELINE ════════════════════════════════ -->
+<div class="timeline-section">
+  <div class="section-label">24-HOUR TIMELINE — DRAG TO CREATE BLOCKS · CLICK BLOCK TO EDIT</div>
+  <div class="timeline-wrapper">
+    <div class="time-labels" id="timeLabels"></div>
+    <div class="timeline-grid" id="timelineGrid">
+      <div class="empty-hint" id="emptyHint">DRAG ACROSS THE TIMELINE TO ADD A BLOCK</div>
+    </div>
+    <div class="block-legend" id="blockLegend"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ BUCKETS ════════════════════════════════ -->
+<div class="section-label" style="margin-bottom:14px">DAY PLANNER NOTES</div>
+<div class="buckets">
+  <div class="bucket">
+    <div class="bucket-header">
+      <div class="bucket-icon">🎯</div>
+      <div class="bucket-title">OBJECTIVES</div>
+    </div>
+    <textarea placeholder="What MUST get done today…" id="objectives"></textarea>
+  </div>
+  <div class="bucket">
+    <div class="bucket-header">
+      <div class="bucket-icon">📋</div>
+      <div class="bucket-title">DAILY GIVEN</div>
+    </div>
+    <textarea placeholder="Recurring tasks, routines…" id="dailyGiven"></textarea>
+  </div>
+  <div class="bucket">
+    <div class="bucket-header">
+      <div class="bucket-icon">🧠</div>
+      <div class="bucket-title">BRAIN DUMP</div>
+    </div>
+    <textarea placeholder="Ideas, thoughts, overflow…" id="brainDump"></textarea>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ MODAL ════════════════════════════════ -->
+<div class="modal-overlay" id="modalOverlay" style="display:none">
+  <div class="modal" id="modal">
+    <div class="modal-title" id="modalTitle">NEW BLOCK</div>
+    <div class="modal-time" id="modalTime">—</div>
+    <div class="modal-label">Label</div>
+    <input type="text" id="blockLabel" placeholder="e.g. NTX App work, Gym, Deep focus…" maxlength="40" autocomplete="off">
+    <div class="modal-label">Color</div>
+    <div class="color-grid" id="colorGrid"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">CANCEL</button>
+      <button class="btn btn-danger" id="btnDelete" style="display:none" onclick="deleteBlock()">DELETE</button>
+      <button class="btn btn-primary" onclick="saveBlock()">SAVE</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────── CONFIG ───────────────
+const COLORS = [
+  '#F5A623','#E07B54','#E84545','#9B59B6',
+  '#3498DB','#1ABC9C','#2ECC71','#F06292',
+];
+const COLOR_NAMES = [
+  'Amber','Coral','Red','Purple',
+  'Blue','Teal','Green','Pink',
+];
+const TOTAL_SLOTS = 48; // 30-min increments = 24 hours
+
+// ─────────────── STATE ───────────────
+let blocks = [];
+let nextId = 1;
+let isDragging = false;
+let dragStart = -1;
+let dragEnd = -1;
+let editingId = null;
+let selectedColor = COLORS[0];
+let modalStart = 0, modalEnd = 1;
+
+// ─────────────── UTILS ───────────────
+function slotToTimeStr(slot) {
+  const h = Math.floor(slot / 2);
+  const m = (slot % 2) * 30;
+  const suffix = h < 12 ? 'AM' : 'PM';
+  const h12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+  return h12 + (m ? ':30' : '') + suffix;
+}
+
+function formatDateLong(isoVal) {
+  if (!isoVal) return '—';
+  const d = new Date(isoVal + 'T12:00:00');
+  return d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+}
+
+// ─────────────── INIT ───────────────
+function init() {
+  const dp = document.getElementById('datePicker');
+  const today = new Date();
+  dp.value = today.toISOString().split('T')[0];
+  updateDateDisplay();
+  dp.addEventListener('change', updateDateDisplay);
+
+  renderTimeLabels();
+  buildSlots();
+  buildColorGrid();
+  loadFromStorage();
+}
+
+function updateDateDisplay() {
+  const val = document.getElementById('datePicker').value;
+  document.getElementById('dateDisplay').textContent = formatDateLong(val);
+  document.title = 'BLOCK DAY — ' + (val || 'Planner');
+}
+
+// ─────────────── TIME LABELS ───────────────
+function renderTimeLabels() {
+  const c = document.getElementById('timeLabels');
+  c.innerHTML = '';
+  for (let h = 0; h < 24; h++) {
+    const el = document.createElement('div');
+    el.className = 'time-label';
+    const suffix = h < 12 ? 'AM' : 'PM';
+    const h12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    el.textContent = h12 + suffix;
+    c.appendChild(el);
+  }
+}
+
+// ─────────────── SLOT GRID ───────────────
+function buildSlots() {
+  const grid = document.getElementById('timelineGrid');
+  // remove old slots (keep empty-hint and blocks)
+  grid.querySelectorAll('.slot').forEach(s => s.remove());
+
+  for (let i = 0; i < TOTAL_SLOTS; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'slot';
+    slot.dataset.i = i;
+    grid.insertBefore(slot, grid.querySelector('.empty-hint'));
+  }
+
+  grid.addEventListener('mousedown', onGridMouseDown);
+  grid.addEventListener('mousemove', onGridMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+}
+
+function onGridMouseDown(e) {
+  const slot = e.target.closest('.slot');
+  if (!slot) return;
+  e.preventDefault();
+  isDragging = true;
+  dragStart = +slot.dataset.i;
+  dragEnd = dragStart;
+  highlightSlots();
+}
+
+function onGridMouseMove(e) {
+  if (!isDragging) return;
+  const slot = e.target.closest('.slot');
+  if (slot) {
+    dragEnd = +slot.dataset.i;
+    highlightSlots();
+  }
+}
+
+function onMouseUp(e) {
+  if (!isDragging) return;
+  isDragging = false;
+  const s = Math.min(dragStart, dragEnd);
+  const en = Math.max(dragStart, dragEnd) + 1;
+  clearHighlight();
+  openNewModal(s, en);
+}
+
+function highlightSlots() {
+  const s = Math.min(dragStart, dragEnd);
+  const en = Math.max(dragStart, dragEnd);
+  document.querySelectorAll('.slot').forEach((sl, i) => {
+    sl.classList.toggle('selecting', i >= s && i <= en);
+  });
+}
+function clearHighlight() {
+  document.querySelectorAll('.slot.selecting').forEach(s => s.classList.remove('selecting'));
+}
+
+// ─────────────── RENDER BLOCKS ───────────────
+function renderBlocks() {
+  const grid = document.getElementById('timelineGrid');
+  grid.querySelectorAll('.time-block').forEach(b => b.remove());
+
+  document.getElementById('emptyHint').style.display = blocks.length ? 'none' : 'flex';
+
+  blocks.forEach(b => {
+    const el = document.createElement('div');
+    el.className = 'time-block';
+    el.style.left = (b.start / TOTAL_SLOTS * 100) + '%';
+    el.style.width = ((b.end - b.start) / TOTAL_SLOTS * 100) + '%';
+    el.style.background = b.color;
+    el.dataset.id = b.id;
+
+    const inner = document.createElement('div');
+    inner.className = 'block-inner';
+    inner.innerHTML = `<span class="block-label-text">${escHtml(b.label)}</span><span class="block-time">${slotToTimeStr(b.start)}</span>`;
+    el.appendChild(inner);
+
+    el.addEventListener('mousedown', (e) => {
+      e.stopPropagation();
+      openEditModal(b.id);
+    });
+
+    grid.appendChild(el);
+  });
+
+  renderLegend();
+  saveToStorage();
+}
+
+function renderLegend() {
+  const c = document.getElementById('blockLegend');
+  c.innerHTML = '';
+  blocks.forEach(b => {
+    const item = document.createElement('div');
+    item.className = 'legend-item';
+    item.innerHTML = `<div class="legend-dot" style="background:${b.color}"></div><span>${escHtml(b.label)}</span><span class="legend-time">${slotToTimeStr(b.start)} – ${slotToTimeStr(b.end)}</span>`;
+    item.addEventListener('click', () => openEditModal(b.id));
+    c.appendChild(item);
+  });
+}
+
+// ─────────────── MODAL ───────────────
+function openNewModal(s, e) {
+  editingId = null;
+  modalStart = s; modalEnd = e;
+  document.getElementById('modalTitle').textContent = 'NEW BLOCK';
+  document.getElementById('modalTime').textContent = slotToTimeStr(s) + '  →  ' + slotToTimeStr(e);
+  document.getElementById('blockLabel').value = '';
+  document.getElementById('btnDelete').style.display = 'none';
+  selectedColor = COLORS[0];
+  updateSwatches();
+  showModal();
+}
+
+function openEditModal(id) {
+  const b = blocks.find(x => x.id === id);
+  if (!b) return;
+  editingId = id;
+  modalStart = b.start; modalEnd = b.end;
+  document.getElementById('modalTitle').textContent = 'EDIT BLOCK';
+  document.getElementById('modalTime').textContent = slotToTimeStr(b.start) + '  →  ' + slotToTimeStr(b.end);
+  document.getElementById('blockLabel').value = b.label;
+  document.getElementById('btnDelete').style.display = 'inline-block';
+  selectedColor = b.color;
+  updateSwatches();
+  showModal();
+}
+
+function showModal() {
+  document.getElementById('modalOverlay').style.display = 'flex';
+  setTimeout(() => document.getElementById('blockLabel').focus(), 80);
+}
+function closeModal() {
+  document.getElementById('modalOverlay').style.display = 'none';
+  editingId = null;
+}
+
+function saveBlock() {
+  const label = document.getElementById('blockLabel').value.trim() || 'Unlabeled';
+  if (editingId !== null) {
+    const b = blocks.find(x => x.id === editingId);
+    if (b) { b.label = label; b.color = selectedColor; }
+  } else {
+    blocks.push({ id: nextId++, start: modalStart, end: modalEnd, label, color: selectedColor });
+  }
+  closeModal();
+  renderBlocks();
+}
+
+function deleteBlock() {
+  if (editingId !== null) {
+    blocks = blocks.filter(b => b.id !== editingId);
+    closeModal();
+    renderBlocks();
+  }
+}
+
+// ─────────────── COLOR PICKER ───────────────
+function buildColorGrid() {
+  const g = document.getElementById('colorGrid');
+  g.innerHTML = '';
+  COLORS.forEach((c, i) => {
+    const sw = document.createElement('div');
+    sw.className = 'color-swatch';
+    sw.style.background = c;
+    sw.dataset.color = c;
+    sw.title = COLOR_NAMES[i];
+    sw.addEventListener('click', () => { selectedColor = c; updateSwatches(); });
+    g.appendChild(sw);
+  });
+  updateSwatches();
+}
+function updateSwatches() {
+  document.querySelectorAll('.color-swatch').forEach(sw => {
+    sw.classList.toggle('selected', sw.dataset.color === selectedColor);
+  });
+}
+
+// ─────────────── STORAGE (localStorage) ───────────────
+function storageKey() {
+  const val = document.getElementById('datePicker').value;
+  return 'blockday_' + (val || 'default');
+}
+function saveToStorage() {
+  const key = storageKey();
+  const data = {
+    blocks,
+    nextId,
+    objectives: document.getElementById('objectives').value,
+    dailyGiven: document.getElementById('dailyGiven').value,
+    brainDump: document.getElementById('brainDump').value,
+  };
+  localStorage.setItem(key, JSON.stringify(data));
+}
+function loadFromStorage() {
+  const key = storageKey();
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    blocks = data.blocks || [];
+    nextId = data.nextId || blocks.length + 1;
+    document.getElementById('objectives').value = data.objectives || '';
+    document.getElementById('dailyGiven').value = data.dailyGiven || '';
+    document.getElementById('brainDump').value = data.brainDump || '';
+    renderBlocks();
+  } catch(e) {}
+}
+
+// Auto-save textareas
+['objectives','dailyGiven','brainDump'].forEach(id => {
+  document.getElementById(id).addEventListener('input', saveToStorage);
+});
+
+// Date change: reload data for that day
+document.getElementById('datePicker').addEventListener('change', loadFromStorage);
+
+// ─────────────── EXPORT ───────────────
+function exportPDF() {
+  window.print();
+}
+
+// ─────────────── KEYBOARD SHORTCUTS ───────────────
+document.addEventListener('keydown', e => {
+  if (document.getElementById('modalOverlay').style.display !== 'none') {
+    if (e.key === 'Enter') saveBlock();
+    if (e.key === 'Escape') closeModal();
+  }
+});
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+
+// ─────────────── MISC ───────────────
+function escHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLOCK DAY — LOGIN</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;
+  --surface:#141414;
+  --surface2:#1c1c1c;
+  --border:#252525;
+  --border2:#333;
+  --text:#e4ddd4;
+  --text-dim:#5a5550;
+  --text-mid:#8a8480;
+  --accent:#d4a853;
+  --accent2:#b88a3a;
+  --red:#c0392b;
+  --green:#27ae60;
+}
+html,body{height:100%;font-size:14px}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Mono',monospace;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  padding:20px;
+}
+.brand{text-align:center;margin-bottom:40px}
+.brand-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:64px;
+  letter-spacing:8px;
+  color:var(--accent);
+  line-height:1;
+}
+.brand-sub{
+  font-size:10px;
+  letter-spacing:4px;
+  color:var(--text-dim);
+  text-transform:uppercase;
+  margin-top:4px;
+}
+.card{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:14px;
+  padding:36px 40px;
+  width:100%;
+  max-width:420px;
+  box-shadow:0 24px 64px rgba(0,0,0,.5);
+}
+.card-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:26px;
+  letter-spacing:3px;
+  color:var(--accent);
+  margin-bottom:28px;
+}
+.field{margin-bottom:20px}
+.field-label{
+  font-size:9px;
+  letter-spacing:3px;
+  color:var(--text-dim);
+  text-transform:uppercase;
+  margin-bottom:8px;
+}
+.field input{
+  width:100%;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  color:var(--text);
+  padding:11px 14px;
+  font-family:'DM Mono',monospace;
+  font-size:12px;
+  border-radius:6px;
+  outline:none;
+  transition:border-color .2s;
+}
+.field input:focus{border-color:var(--accent)}
+.field input::placeholder{color:var(--text-dim)}
+.btn-submit{
+  width:100%;
+  background:var(--accent);
+  color:#000;
+  border:none;
+  padding:13px;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:18px;
+  letter-spacing:3px;
+  cursor:pointer;
+  border-radius:6px;
+  transition:background .2s;
+  margin-top:8px;
+}
+.btn-submit:hover{background:var(--accent2)}
+.btn-submit:disabled{background:var(--border2);color:var(--text-dim);cursor:not-allowed}
+.error-msg{
+  background:rgba(192,57,43,.15);
+  border:1px solid rgba(192,57,43,.4);
+  color:#e74c3c;
+  padding:10px 14px;
+  border-radius:6px;
+  font-size:11px;
+  margin-bottom:18px;
+  display:none;
+  letter-spacing:.5px;
+}
+.footer-link{
+  text-align:center;
+  margin-top:24px;
+  font-size:11px;
+  color:var(--text-dim);
+}
+.footer-link a{
+  color:var(--accent);
+  text-decoration:none;
+  letter-spacing:.5px;
+}
+.footer-link a:hover{color:var(--accent2)}
+</style>
+</head>
+<body>
+<div class="brand">
+  <div class="brand-title">BLOCK DAY</div>
+  <div class="brand-sub">Time Block Planner</div>
+</div>
+
+<div class="card">
+  <div class="card-title">SIGN IN</div>
+  <div class="error-msg" id="errorMsg"></div>
+  <form id="loginForm">
+    <div class="field">
+      <div class="field-label">Email</div>
+      <input type="email" id="email" placeholder="you@example.com" required autocomplete="email">
+    </div>
+    <div class="field">
+      <div class="field-label">Password</div>
+      <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+    </div>
+    <button type="submit" class="btn-submit" id="submitBtn">SIGN IN</button>
+  </form>
+  <div class="footer-link">
+    Don't have an account? <a href="/register.html">Create one</a>
+  </div>
+</div>
+
+<script>
+const form = document.getElementById('loginForm');
+const errorMsg = document.getElementById('errorMsg');
+const submitBtn = document.getElementById('submitBtn');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  errorMsg.style.display = 'none';
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'SIGNING IN…';
+
+  try {
+    const res = await fetch('/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+      }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      window.location.href = '/';
+    } else {
+      showError(data.error || 'Login failed');
+    }
+  } catch {
+    showError('Network error — please try again');
+  }
+});
+
+function showError(msg) {
+  errorMsg.textContent = msg;
+  errorMsg.style.display = 'block';
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'SIGN IN';
+}
+</script>
+</body>
+</html>
